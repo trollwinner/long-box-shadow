@@ -1,11 +1,12 @@
-.long-box-shadow(@color: #000, @color_fade: 100, @lenght: 4, @segments: 4, @angle: 45, @fading: 0, @blur_from: 0, @blur_to: 0, @offset_from: 0, @offset_to: 0, @step: 1, @out: '') when (@step <= @segments) {
+.long-box-shadow(@color_from: #000, @color_to: #fff, @color_fade_from: 100, @color_fade_to: 0, @lenght: 4, @segments: 4, @angle: 45, @blur_from: 0, @blur_to: 0, @offset_from: 0, @offset_to: 0, @step: 1, @out: '') when (@step <= @segments) {
   @shadow_step: @step + 1;
-  @percent: round((@color_fade / @segments) * (@fading / 100) / 1);
+  @shadow_color: @color_from + (((@color_to - @color_from) / (@segments - 1)) * (@step - 1));
+  @shadow_fade: @color_fade_from + round(((@color_fade_to - @color_fade_from) / (@segments - 1)) * (@step - 1)); 
   @shadow_blur: @blur_from + round(((@blur_to - @blur_from) / (@segments - 1)) * (@step - 1));
   @shadow_offset: @offset_from + round(((@offset_to - @offset_from) / (@segments - 1)) * (@step - 1));
-  @output_color: fade(@color, @color_fade - @percent * (@step - 1)) ;
   @shadow_x: round(cos(@angle)) * (@lenght / @segments) * @step;
   @shadow_y: round(sin(@angle)) * (@lenght / @segments) * @step;
+  @output_color: fade(@shadow_color, @shadow_fade) ;
   @output: ~"@{out}@{shadow_x}px @{shadow_y}px @{shadow_blur}px @{shadow_offset}px @{output_color}";
   .long-shadow-loop(@string, @index, @segments) when (@index = @segments) {
     -webkit-box-shadow: @string;
@@ -13,5 +14,5 @@
             box-shadow: @string;
   }
   .long-shadow-loop(@output, @step, @segments);
-  .long-box-shadow(@output_color, @color_fade, @lenght, @segments, @angle, @fading, @blur_from, @blur_to, @offset_from, @offset_to, @shadow_step, "@{output}, ")
+  .long-box-shadow(@output_color, @color_to, @color_fade_from, @color_fade_to, @lenght, @segments, @angle, @blur_from, @blur_to, @offset_from, @offset_to, @shadow_step, "@{output}, ")
 }
